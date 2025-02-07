@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneDirectory.Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneDirectory.Infrastructure", "PhoneDirectory.Infrastructure\PhoneDirectory.Infrastructure.csproj", "{400E9510-C486-469C-AE9A-63849E9E7119}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneDirectory.API", "PhoneDirectory.API\PhoneDirectory.API.csproj", "{F1607DA1-EE3E-4569-81B6-02393B883AD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{400E9510-C486-469C-AE9A-63849E9E7119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{400E9510-C486-469C-AE9A-63849E9E7119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{400E9510-C486-469C-AE9A-63849E9E7119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1607DA1-EE3E-4569-81B6-02393B883AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1607DA1-EE3E-4569-81B6-02393B883AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1607DA1-EE3E-4569-81B6-02393B883AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1607DA1-EE3E-4569-81B6-02393B883AD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +43,6 @@ Global
 		{3BFE8518-6137-466E-A9A9-B01F369C2DE4} = {803D491E-D2D5-47AF-86A4-ED6C56380777}
 		{4B3F4F51-4E42-4744-BA90-11C41F0437B0} = {803D491E-D2D5-47AF-86A4-ED6C56380777}
 		{400E9510-C486-469C-AE9A-63849E9E7119} = {803D491E-D2D5-47AF-86A4-ED6C56380777}
+		{F1607DA1-EE3E-4569-81B6-02393B883AD0} = {803D491E-D2D5-47AF-86A4-ED6C56380777}
 	EndGlobalSection
 EndGlobal
