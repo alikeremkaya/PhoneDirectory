@@ -4,10 +4,13 @@ namespace PhoneDirectory.Domain.Entities;
 
 public class CommunicationInfo:AuditableEntity
 {
-    // For example: "PhoneNumber", "Email", or "Location"
+    //"PhoneNumber", "Email" ya da "Location"
     public string InfoType { get; set; }
 
     public string Content { get; set; }
 
     public Guid PersonId { get; set; }
+
+    // Navigation property
+    public Person Person { get; set; }
 }

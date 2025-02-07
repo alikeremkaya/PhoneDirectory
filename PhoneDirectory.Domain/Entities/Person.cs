@@ -10,5 +10,5 @@ public class Person:AuditableEntity
     public string Company { get; set; }
 
     // Rehberdeki kişi ile ilişkili iletişim bilgileri
-    public ICollection<ContactInfoType> ContactInfos { get; set; } = new List<ContactInfoType>();
+    public ICollection<CommunicationInfo> ContactInfos { get; set; } = new List<CommunicationInfo>();
 }

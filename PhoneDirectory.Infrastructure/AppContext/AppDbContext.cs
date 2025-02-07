@@ -15,7 +15,7 @@ namespace PhoneDirectory.Infrastructure.AppContext
 
       
 
-        // Fallback constructor if IHttpContextAccessor is not provided
+       
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -25,7 +25,7 @@ namespace PhoneDirectory.Infrastructure.AppContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Automatically apply all entity configurations found in the assembly containing IEntityConfiguration.
+           
             builder.ApplyConfigurationsFromAssembly(typeof(IEntityConfiguration).Assembly);
             base.OnModelCreating(builder);
         }
@@ -42,13 +42,11 @@ namespace PhoneDirectory.Infrastructure.AppContext
             return base.SaveChangesAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Iterates through all tracked BaseEntity entries and sets audit information accordingly.
-        /// </summary>
+       
         private void SetBaseProperties()
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
-            // Try to retrieve the current user identifier from the HttpContext.
+           
             var userId = /*_httpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)*/"Kullanıcı bulunamadı";
 
             foreach (var entry in entries)
