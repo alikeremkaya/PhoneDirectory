@@ -15,13 +15,13 @@ public class CommunicationInfoConfiguration : AuditableEntityConfiguraton<Commun
                .IsRequired()
                .HasMaxLength(50);
 
-        builder.Property(x => x.Content)
+        builder.Property(x => x.InfoContent)
                .IsRequired()
                .HasMaxLength(250);
 
       
         builder.HasOne(x => x.Person)
-               .WithMany(x => x.ContactInfos)
+               .WithMany(x => x.CommunicationInfos)
                .HasForeignKey(x => x.PersonId)
                .OnDelete(DeleteBehavior.Cascade);
 

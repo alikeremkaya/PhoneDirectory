@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PhoneDirectory.Application\PhoneDirectory.Application.csproj" />
+    <ProjectReference Include="..\PhoneDirectory.Infrastructure\PhoneDirectory.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,8 +7,8 @@ public class Person:AuditableEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Company { get; set; }
+    public string CompanyName { get; set; }
 
-    // Rehberdeki kişi ile ilişkili iletişim bilgileri
-    public ICollection<CommunicationInfo> ContactInfos { get; set; } = new List<CommunicationInfo>();
+    // Navigation property
+    public ICollection<CommunicationInfo> CommunicationInfos { get; set; }
 }

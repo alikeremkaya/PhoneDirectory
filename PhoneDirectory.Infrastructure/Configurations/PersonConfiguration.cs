@@ -18,11 +18,11 @@ namespace PhoneDirectory.Infrastructure.Configurations
                    .IsRequired()
                    .HasMaxLength(50);
 
-            builder.Property(x => x.Company)
+            builder.Property(x => x.CompanyName)
                    .HasMaxLength(100);
 
            
-            builder.HasMany(x => x.ContactInfos)
+            builder.HasMany(x => x.CommunicationInfos)
                    .WithOne(x => x.Person)
                    .HasForeignKey(x => x.PersonId)
                    .OnDelete(DeleteBehavior.Cascade);
