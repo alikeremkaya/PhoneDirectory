@@ -10,5 +10,5 @@ public class CommunicationInfo:AuditableEntity
     public string InfoContent { get; set; }
 
     // Navigation property
-    public Person Person { get; set; }
+    public virtual Person Person { get; set; }
 }

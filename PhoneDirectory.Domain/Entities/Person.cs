@@ -10,5 +10,5 @@ public class Person:AuditableEntity
     public string CompanyName { get; set; }
 
     // Navigation property
-    public ICollection<CommunicationInfo> CommunicationInfos { get; set; }
+    public virtual  ICollection<CommunicationInfo> CommunicationInfos { get; set; }
 }
