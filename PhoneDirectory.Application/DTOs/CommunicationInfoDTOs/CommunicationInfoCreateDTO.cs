@@ -1,7 +1,13 @@
-﻿namespace PhoneDirectory.Application.DTOs.CommunicationInfoDTOs;
+﻿using PhoneDirectory.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace PhoneDirectory.Application.DTOs.CommunicationInfoDTOs;
 
 public class CommunicationInfoCreateDTO
 {
-    public string InfoType { get; set; }
-    public string Content { get; set; }
+    [Required]
+    public ContactInfoType InfoType { get; set; }
+
+    [Required]
+    public string InfoContent { get; set; }
 }
