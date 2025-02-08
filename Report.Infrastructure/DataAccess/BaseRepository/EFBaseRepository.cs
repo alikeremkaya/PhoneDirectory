@@ -4,7 +4,7 @@ using Report.Domain.Core.Base;
 using Report.Infrastructure.DataAccess.Interfaces;
 using System.Linq.Expressions;
 
-namespace PhoneDirectory.Infrastructure.DataAccess.BaseRepository;
+namespace Report.Infrastructure.DataAccess.BaseRepository;
 
 public class EFBaseRepository<TEntity> : IAsyncRepository,
     IAsyncDeletableRepository<TEntity>,

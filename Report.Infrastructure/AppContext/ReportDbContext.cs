@@ -8,15 +8,15 @@ using System.Security.Claims;
 
 namespace Report.Infrastructure.AppContext
 {
-    public class AppDbContext:DbContext
+    public class ReportDbContext:DbContext
     {
         public const string DevConnectionString = "AppConnectionDev";
-     
 
-      
 
-       
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public virtual DbSet<Report.Domain.Entities.Report> Reports { get; set; }
+
+
+        public ReportDbContext(DbContextOptions<ReportDbContext> options) : base(options)
         {
         }
 
