@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
-using PhoneDirectory.API.Controllers;
 using PhoneDirectory.Application.DTOs.PersonDTOs;
 using PhoneDirectory.Application.Services.PersonService;
 using PhoneDirectory.Domain.Utilities.Concretes;

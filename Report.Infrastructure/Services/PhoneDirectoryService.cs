@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
-using Report.Application.Interfaces.Services;
+﻿using Report.Application.Interfaces.Services;
+using System.Text.Json;
+
 namespace Report.Infrastructure.Services;
 
 public class PhoneDirectoryService : IPhoneDirectoryService

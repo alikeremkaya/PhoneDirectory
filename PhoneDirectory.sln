@@ -16,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneDirectory.UnitTests", "PhoneDirectory.UnitTests\PhoneDirectory.UnitTests.csproj", "{66912FBA-0BFC-4545-B97F-F805B2BB6A70}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReportService", "ReportService", "{7F320BA7-DDB4-488C-9C49-3385ECFCA455}"
+	ProjectSection(SolutionItems) = preProject
+		Report.Infrastructure\Extentions\docker-compose.yml = Report.Infrastructure\Extentions\docker-compose.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.Domain", "Report.Domain\Report.Domain.csproj", "{521BFC39-83F4-4347-A8FB-FC0AE400C118}"
 EndProject
