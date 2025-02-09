@@ -19,8 +19,8 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host(builder.Configuration.GetValue<string>("RabbitMQ:Host"), "/", h =>
         {
-            h.Username(builder.Configuration.GetValue<string>("RabbitMQ:Username"));
-            h.Password(builder.Configuration.GetValue<string>("RabbitMQ:Password"));
+            h.Username(builder.Configuration.GetValue<string>("RabbitMQ:guest"));
+            h.Password(builder.Configuration.GetValue<string>("RabbitMQ:guest"));
         });
 
         // Consumer endpoint konfigürasyonu
