@@ -22,9 +22,9 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 
 ### Gereksinimler
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [RabbitMQ](https://www.rabbitmq.com/download.html)
-- [Docker](https://www.docker.com/get-started) (isteğe bağlı)
+- [Docker](https://www.docker.com/get-started)
 
 ### Adımlar
 
@@ -35,20 +35,16 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
     cd PhoneDirectory
     ```
 
-2. RabbitMQ'yu başlatın:
+2. RabbitMQ'yu Docker ile başlatın:
 
-    Docker kullanarak:
     ```bash
     docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
     ```
 
-    veya manuel olarak RabbitMQ'yu indirin ve başlatın.
-
-3. Projeyi çalıştırın:
+3. Projeyi Docker Compose ile çalıştırın:
 
     ```bash
-    dotnet run --project PhoneDirectory.API
-    dotnet run --project Report.API
+    docker-compose up --build
     ```
 
 4. Tarayıcınızda Swagger dokümantasyonunu açın:
@@ -78,8 +74,8 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
     Content-Type: application/json
 
     {
-        "firstName": "John",
-        "lastName": "Doe"
+        "firstName": "Ali Kerem",
+        "lastName": "Kaya"
     }
     ```
 
@@ -90,8 +86,8 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 
     {
         "id": "{id}",
-        "firstName": "John",
-        "lastName": "Doe"
+        "firstName": "Ali Kerem",
+        "lastName": "Kaya"
     }
     ```
 
@@ -172,17 +168,7 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
     }
     ```
 
-### Sağlık Kontrolü
 
-- PhoneDirectory.API sağlık kontrolü:
-    ```http
-    GET /api/contacts/health
-    ```
-
-- Report.API sağlık kontrolü:
-    ```http
-    GET /api/reports/health
-    ```
 
 ## Mimari
 
@@ -193,7 +179,3 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 ## Yazarlar
 
 - **Ali Kerem Kaya** - [alikeremkaya](https://github.com/alikeremkaya)
-
-## Lisans
-
-Bu proje MIT Lisansı ile lisanslanmıştır - daha fazla bilgi için [LICENSE](LICENSE) dosyasına bakın.
