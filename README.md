@@ -115,7 +115,7 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 
     {
         "type": "Phone",
-        "value": "+123456789"
+        "value": "+5456227"
     }
     ```
 
@@ -126,7 +126,7 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 
     {
         "type": "Phone",
-        "value": "+123456789"
+        "value": "+5456227"
     }
     ```
 
