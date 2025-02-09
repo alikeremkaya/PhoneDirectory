@@ -10,17 +10,17 @@ namespace Report.Infrastructure.AppContext
 {
     public class ReportDbContext:DbContext
     {
-        public const string DevConnectionString = "AppConnectionDev";
+        public const string DevConnectionString = "AppConnectionDev2";
 
 
-        public virtual DbSet<Report.Domain.Entities.Report> Reports { get; set; }
+       
 
 
         public ReportDbContext(DbContextOptions<ReportDbContext> options) : base(options)
         {
         }
 
-        
+        public virtual DbSet<Report.Domain.Entities.Report> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
