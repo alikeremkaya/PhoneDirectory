@@ -1,6 +1,15 @@
 @PhoneDirectory.API_HostAddress = http://localhost:5133
 
-GET {{PhoneDirectory.API_HostAddress}}/weatherforecast/
+### Get Location Statistics
+GET {{PhoneDirectory.API_HostAddress}}/api/contacts/statistics/Istanbul
+Accept: application/json
+
+### Test farklý lokasyonlar için
+GET {{PhoneDirectory.API_HostAddress}}/api/contacts/statistics/Ankara
+Accept: application/json
+
+### Test servis saðlýðý
+GET {{PhoneDirectory.API_HostAddress}}/api/health
 Accept: application/json
 
 ###

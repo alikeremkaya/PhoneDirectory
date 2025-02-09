@@ -1,6 +1,30 @@
 @Report.API_HostAddress = http://localhost:5191
 
-GET {{Report.API_HostAddress}}/weatherforecast/
+### Get All Reports
+GET {{Report.API_HostAddress}}/api/reports
 Accept: application/json
 
-###
+### Get Report by ID
+GET {{Report.API_HostAddress}}/api/reports/{id}
+Accept: application/json
+
+### Create New Report
+POST {{Report.API_HostAddress}}/api/reports
+Content-Type: application/json
+
+{
+    "reportType": "LocationReport",
+    "requestDate": "2025-02-09T17:13:35Z"
+}
+
+### Update Report Status
+PUT {{Report.API_HostAddress}}/api/reports/{id}/status
+Content-Type: application/json
+
+{
+    "status": "Completed"
+}
+
+### Health Check
+GET {{Report.API_HostAddress}}/api/reports/health
+Accept: application/json

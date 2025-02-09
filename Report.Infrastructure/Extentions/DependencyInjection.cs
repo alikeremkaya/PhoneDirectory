@@ -5,6 +5,7 @@ using Report.Application.Interfaces.Services;
 using Report.Infrastructure.AppContext;
 using Report.Infrastructure.Repositories;
 using Report.Infrastructure.Services;
+using Xunit.Sdk;
 
 namespace Report.Infrastructure.Extensions;
 
@@ -23,7 +24,7 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<IReportRepository, ReportRepository>();
-
+        services.AddScoped<IMessageBus, MessageBus>();
         // HTTP Client for PhoneDirectory Service
         services.AddHttpClient<IPhoneDirectoryService, PhoneDirectoryService>(client =>
         {
