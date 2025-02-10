@@ -9,7 +9,6 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
 - [Kullanım](#kullanım)
 - [Mimari](#mimari)
 - [Yazarlar](#yazarlar)
-- [Lisans](#lisans)
 
 ## Özellikler
 
