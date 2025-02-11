@@ -45,8 +45,17 @@ PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon r
     ```bash
     docker-compose up --build
     ```
+4. PhoneDirectory.API mikroservisini çalıştırın:
+    ```bash
+    dotnet run --project PhoneDirectory.API
+    ```
 
-4. Tarayıcınızda Swagger dokümantasyonunu açın:
+5. Report.API mikroservisini çalıştırın:
+    ```bash
+    dotnet run --project Report.API
+    ```
+
+6. Tarayıcınızda Swagger dokümantasyonunu açın:
 
     - PhoneDirectory.API: `http://localhost:5133/swagger`
     - Report.API: `http://localhost:5191/swagger`
