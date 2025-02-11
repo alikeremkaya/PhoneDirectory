@@ -14,17 +14,17 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Database Context
+        
         services.AddDbContext<ReportDbContext>(options =>
         {
             options.UseLazyLoadingProxies();
             options.UseSqlServer(configuration.GetConnectionString("AppConnectionDev2"));
         });
 
-        // Repositories
+       
         services.AddScoped<IReportRepository, ReportRepository>();
         
-        // HTTP Client for PhoneDirectory Service
+        
         services.AddHttpClient<IPhoneDirectoryService, PhoneDirectoryService>(client =>
         {
             client.BaseAddress = new Uri(configuration["Services:PhoneDirectory"]);

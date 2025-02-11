@@ -19,6 +19,7 @@ namespace PhoneDirectory.Infrastructure.Extentions
             });
 
             services.AddScoped<IPersonRepository, PersonRepository>();  
+
             services.AddScoped<ICommunicationInfoRepository, CommunicationInfoRepository>();
 
 
