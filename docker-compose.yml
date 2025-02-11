@@ -33,7 +33,7 @@ services:
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectoryDb;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectory;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
