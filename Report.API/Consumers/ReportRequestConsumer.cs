@@ -22,17 +22,17 @@ public class ReportRequestConsumer : IConsumer<ReportRequestMessage>
     {
         try
         {
-            // Raporu veritabanından al
+           
             var report = await _reportRepository.GetByIdAsync(context.Message.ReportId);
 
             if (report == null)
                 return;
 
-            // Örnek istatistikler (şimdilik sabit değerler)
+           
             var personCount = 10;
             var phoneNumberCount = 15;
 
-            // Raporu güncelle
+            
             report.ReportStatus = ReportStatus.Completed;
             report.PersonCount = personCount;
             report.PhoneNumberCount = phoneNumberCount;
@@ -41,7 +41,7 @@ public class ReportRequestConsumer : IConsumer<ReportRequestMessage>
             await _reportRepository.UpdateAsync(report);
             await _reportRepository.SaveChangesAsync();
 
-            // Tamamlanma mesajını yayınla
+         
             await _publishEndpoint.Publish(new ReportCompletedMessage
             {
                 ReportId = report.Id,
@@ -53,7 +53,7 @@ public class ReportRequestConsumer : IConsumer<ReportRequestMessage>
         }
         catch (Exception ex)
         {
-            // Hata durumunda loglama yapılabilir
+          
             throw;
         }
     }
