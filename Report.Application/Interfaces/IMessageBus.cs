@@ -1,6 +1,8 @@
 ﻿namespace Report.Application.Interfaces;
 
-public interface IMessageBus
+public interface IMessageBus : IDisposable
 {
-    Task  PublishReportRequestAsync(Guid reportId);
+    void PublishMessage<T>(T message, string queueName);
+    void Subscribe<T>(string queueName, Action<T> onMessage);
+
 }

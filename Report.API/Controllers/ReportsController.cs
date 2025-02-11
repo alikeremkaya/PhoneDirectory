@@ -5,6 +5,7 @@ using Report.Application.Services;
 using Report.Domain.Utilities.Interfaces;
 
 namespace Report.API.Controllers;
+
 /// <summary>
 /// Rapor yönetimi ile ilgili işlemleri gerçekleştiren API denetleyicisidir.
 /// </summary>
@@ -14,15 +15,19 @@ public class ReportsController : ControllerBase
 {
     private readonly IReportApplicationService _reportService;
     private readonly IMessageBus _messageBus;
+    private const string QUEUE_NAME = "report-requests";
 
     public ReportsController(
         IReportApplicationService reportService,
         IMessageBus messageBus)
     {
         _reportService = reportService;
-        _messageBus = messageBus;
+        _messageBus = messageBus ?? throw new ArgumentNullException(nameof(messageBus));
     }
 
+    /// <summary>
+    /// Tüm raporları listeler.
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IDataResult<IEnumerable<ReportListDTO>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,6 +37,10 @@ public class ReportsController : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
+    /// <summary>
+    /// Belirtilen ID'ye sahip raporu getirir.
+    /// </summary>
+    /// <param name="id">Rapor ID'si</param>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(IDataResult<ReportDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,29 +50,85 @@ public class ReportsController : ControllerBase
         return result.IsSuccess ? Ok(result) : NotFound(result);
     }
 
+    /// <summary>
+    /// Yeni bir rapor oluşturur ve RabbitMQ'ya mesaj gönderir.
+    /// </summary>
+    /// <param name="createReportDto">Oluşturulacak rapor bilgileri</param>
     [HttpPost]
     [ProducesResponseType(typeof(IDataResult<ReportDTO>), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateReportDTO createReportDto)
     {
-        var result = await _reportService.CreateReportAsync(createReportDto);
-
-        if (result.IsSuccess)
+        try
         {
-            // Rapor oluşturulduğunda RabbitMQ'ya mesaj gönder
-            await _messageBus.PublishReportRequestAsync(result.Data.Id);
-            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result);
-        }
+            var result = await _reportService.CreateReportAsync(createReportDto);
 
-        return BadRequest(result);
+            if (result.IsSuccess)
+            {
+                // Rapor oluşturulduğunda RabbitMQ'ya mesaj gönder
+                var message = new ReportMessage
+                {
+                    ReportId = result.Data.Id,
+                    CreatedDate = DateTime.UtcNow,
+                    Status = "Created"
+                };
+
+                _messageBus.PublishMessage(message, QUEUE_NAME);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = result.Data.Id },
+                    result
+                );
+            }
+
+            return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { message = "Rapor oluşturulurken bir hata oluştu.", error = ex.Message }
+            );
+        }
     }
 
+    /// <summary>
+    /// Belirtilen ID'ye sahip raporun durumunu günceller.
+    /// </summary>
+    /// <param name="id">Rapor ID'si</param>
+    /// <param name="updateDto">Güncellenecek durum bilgisi</param>
     [HttpPut("{id}/status")]
     [ProducesResponseType(typeof(IDataResult<ReportDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateReportDTO updateDto)
     {
         var result = await _reportService.UpdateReportStatusAsync(id, updateDto);
+
+        if (result.IsSuccess)
+        {
+            // Rapor durumu güncellendiğinde RabbitMQ'ya mesaj gönder
+            var message = new ReportMessage
+            {
+                ReportId = id,
+                UpdatedDate = DateTime.UtcNow,
+                Status = updateDto.Status.ToString()
+            };
+
+            _messageBus.PublishMessage(message, $"{QUEUE_NAME}.status-updated");
+        }
+
         return result.IsSuccess ? Ok(result) : NotFound(result);
     }
+}
+
+/// <summary>
+/// RabbitMQ'ya gönderilecek rapor mesajı
+/// </summary>
+public class ReportMessage
+{
+    public Guid ReportId { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
+    public string Status { get; set; }
 }

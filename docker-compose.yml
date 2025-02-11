@@ -4,8 +4,8 @@ services:
     image: rabbitmq:3-management
     container_name: report-rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -19,34 +19,51 @@ services:
       timeout: 5s
       retries: 3
 
-  report-api:
+  phonedirectory-api:
     build:
       context: .
-      dockerfile: src/Report.API/Dockerfile
-    container_name: report-api
+      dockerfile: PhoneDirectory.API/Dockerfile
+    container_name: phonedirectory-api
     ports:
-      - "5002:5000"
+      - "5001:8080"
+      - "5002:8081"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - Services__PhoneDirectory=http://phonedirectory-api:5001
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectoryDb;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - report-network
     depends_on:
       rabbitmq:
         condition: service_healthy
-    networks:
-      - report-network
 
-  phonedirectory-api:
+  report-api:
     build:
-      context: ../PhoneDirectory
-      dockerfile: src/PhoneDirectory.API/Dockerfile
-    container_name: phonedirectory-api
+      context: .
+      dockerfile: Report.API/Dockerfile
+    container_name: report-api
     ports:
-      - "5001:5000"
+      - "5003:8080"
+      - "5004:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=guest
+      - RabbitMQ__Password=guest
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=Report;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - report-network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   rabbitmq_data:

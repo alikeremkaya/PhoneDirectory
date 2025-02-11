@@ -2,6 +2,7 @@
 using MassTransit;
 using Report.API.Consumers;
 using Report.Application.Extentions;
+using Report.Application.Interfaces;
 using Report.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,11 @@ builder.Services.AddMassTransit(x =>
         cfg.ConfigureEndpoints(context);
     });
 });
+builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
 
+// RabbitMQ Configuration
+builder.Services.Configure<RabbitMQConfiguration>(
+    builder.Configuration.GetSection("RabbitMQ"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
