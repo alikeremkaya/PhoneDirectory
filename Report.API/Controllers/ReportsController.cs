@@ -15,6 +15,7 @@ public class ReportsController : ControllerBase
 {
     private readonly IReportApplicationService _reportService;
     private readonly IMessageBus _messageBus;
+    private IReportApplicationService @object;
     private const string QUEUE_NAME = "report-requests";
 
     public ReportsController(
@@ -23,6 +24,11 @@ public class ReportsController : ControllerBase
     {
         _reportService = reportService;
         _messageBus = messageBus ?? throw new ArgumentNullException(nameof(messageBus));
+    }
+
+    public ReportsController(IReportApplicationService @object)
+    {
+        this.@object = @object;
     }
 
     /// <summary>
