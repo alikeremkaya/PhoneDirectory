@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Report.Application.DTOs;
-using Report.Application.Interfaces;
+
 using Report.Application.Services;
 using Report.Domain.Utilities.Interfaces;
+using Xunit.Sdk;
 
 namespace Report.API.Controllers;
 
@@ -79,7 +80,7 @@ public class ReportsController : ControllerBase
                     Status = "Created"
                 };
 
-                _messageBus.PublishMessage(message, QUEUE_NAME);
+               
 
                 return CreatedAtAction(
                     nameof(GetById),
@@ -121,7 +122,7 @@ public class ReportsController : ControllerBase
                 Status = updateDto.Status.ToString()
             };
 
-            _messageBus.PublishMessage(message, $"{QUEUE_NAME}.status-updated");
+          
         }
 
         return result.IsSuccess ? Ok(result) : NotFound(result);
