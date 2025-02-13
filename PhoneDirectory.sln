@@ -16,10 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneDirectory.UnitTests", "PhoneDirectory.UnitTests\PhoneDirectory.UnitTests.csproj", "{66912FBA-0BFC-4545-B97F-F805B2BB6A70}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReportService", "ReportService", "{7F320BA7-DDB4-488C-9C49-3385ECFCA455}"
-	ProjectSection(SolutionItems) = preProject
-		Report.Infrastructure\Extentions\docker-compose.yml = Report.Infrastructure\Extentions\docker-compose.yml
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.Domain", "Report.Domain\Report.Domain.csproj", "{521BFC39-83F4-4347-A8FB-FC0AE400C118}"
 EndProject
@@ -30,8 +26,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.API", "Report.API\Report.API.csproj", "{638A15F3-3DFC-45D3-9AC8-B39D677D8A94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report.UnitTests", "Report.UnitTests\Report.UnitTests.csproj", "{16FBBA93-9816-4683-83F3-FB9A97BDE7E4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Messages", "Shared.Messages\Shared.Messages.csproj", "{6779234E-60CA-4F2F-AB14-5B938A5FE629}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +73,6 @@ Global
 		{16FBBA93-9816-4683-83F3-FB9A97BDE7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16FBBA93-9816-4683-83F3-FB9A97BDE7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16FBBA93-9816-4683-83F3-FB9A97BDE7E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6779234E-60CA-4F2F-AB14-5B938A5FE629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6779234E-60CA-4F2F-AB14-5B938A5FE629}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6779234E-60CA-4F2F-AB14-5B938A5FE629}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6779234E-60CA-4F2F-AB14-5B938A5FE629}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

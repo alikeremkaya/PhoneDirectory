@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Report.Application.Interfaces;
+
 using Report.Application.Services;
 namespace Report.Application.Extentions;
 public static class DependencyInjection
