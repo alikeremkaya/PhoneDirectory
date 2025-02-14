@@ -25,15 +25,14 @@ services:
       dockerfile: PhoneDirectory.API/Dockerfile
     container_name: phonedirectory-api
     ports:
-      - "5001:8080"
-      - "5002:8081"
+      - "5001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081
-      - RabbitMQ__Host=rabbitmq
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectory;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectory;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -48,15 +47,14 @@ services:
       dockerfile: Report.API/Dockerfile
     container_name: report-api
     ports:
-      - "5003:8080"
-      - "5004:8081"
+      - "5003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081
-      - RabbitMQ__Host=rabbitmq
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=Report;Trusted_Connection=True;TrustServerCertificate=True;Integrated Security=True;
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=Report;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

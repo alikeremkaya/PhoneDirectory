@@ -1,6 +1,6 @@
-
-using MassTransit;
-
+using RabbitMQ.Client;
+using Report.API;
+using Report.API.Services;
 using Report.Application.Extentions;
 
 using Report.Infrastructure.Extensions;
@@ -10,8 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-// MassTransit ve RabbitMQ konfigürasyonu
+builder.Services.AddSingleton(sp => new RabbitMQClient(builder.Configuration["RabbitMQ:HostName"]));
+var factory = new ConnectionFactory() { HostName = builder.Configuration["RabbitMQ:HostName"] };    
 
+builder.Services.AddSingleton<MessageListener>();
+builder.Services.AddHostedService<Worker>();
 
 
 
