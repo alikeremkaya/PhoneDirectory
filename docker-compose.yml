@@ -1,71 +1,86 @@
-version: '3.8'
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: report-rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq  
+    restart: always
     ports:
-      - "5673:5672"
-      - "15673:15672"
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     networks:
-      - report-network
+      - app_network
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
 
-  phonedirectory-api:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql
+    restart: always
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "sqlcmd -U sa -P YourStrong!Passw0rd -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phonedirectory.api:
     build:
       context: .
-      dockerfile: PhoneDirectory.API/Dockerfile
+      dockerfile: Phonedirectory.API/Dockerfile
     container_name: phonedirectory-api
-    ports:
-      - "5001:80"
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - RabbitMQ__HostName=rabbitmq
+      - ASPNETCORE_URLS=http://+:5133
+      - RabbitMQ__HostName=rabbitmq 
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=PhoneDirectory;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - report-network
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=PhoneDirectory;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    ports:
+      - "5133:5133"
     depends_on:
       rabbitmq:
         condition: service_healthy
+      mssql:
+        condition: service_healthy
+    networks:
+      - app_network
 
-  report-api:
+  report.api:
     build:
       context: .
       dockerfile: Report.API/Dockerfile
     container_name: report-api
-    ports:
-      - "5003:80"
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - RabbitMQ__HostName=rabbitmq
+      - ASPNETCORE_URLS=http://+:5191
+      - RabbitMQ__HostName=rabbitmq 
       - RabbitMQ__Username=guest
       - RabbitMQ__Password=guest
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-KUS4Q12\\SQLEXPRESS;Database=Report;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - report-network
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=Report;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    ports:
+      - "5191:5191"
     depends_on:
       rabbitmq:
         condition: service_healthy
-
-volumes:
-  rabbitmq_data:
+      mssql:
+        condition: service_healthy
+    networks:
+      - app_network
 
 networks:
-  report-network:
+  app_network:
     driver: bridge

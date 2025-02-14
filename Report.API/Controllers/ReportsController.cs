@@ -132,7 +132,7 @@ public class ReportsController : ControllerBase
 /// <summary>
 /// RabbitMQ'ya gönderilecek rapor mesajı
 /// </summary>
-public class ReportMessage
+public class ReportMessage 
 {
     public Guid ReportId { get; set; }
     public DateTime CreatedDate { get; set; }

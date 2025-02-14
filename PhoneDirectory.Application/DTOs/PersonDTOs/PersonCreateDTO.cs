@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PhoneDirectory.Application.DTOs.CommunicationInfoDTOs;
+using PhoneDirectory.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhoneDirectory.Application.DTOs.PersonDTOs;
 
@@ -11,4 +13,7 @@ public class PersonCreateDTO
     public string LastName { get; set; }
 
     public string CompanyName { get; set; }
+    public List<CommunicationInfoDTO> CommunicationInfos { get; set; } = new();
+    public ContactInfoType InfoType { get; set; }
+
 }

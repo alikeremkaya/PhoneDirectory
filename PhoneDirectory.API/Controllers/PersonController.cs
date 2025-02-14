@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PhoneDirectory.API.Services;
 using PhoneDirectory.Application.DTOs.PersonDTOs;
 using PhoneDirectory.Application.Services.PersonService;
 
@@ -10,62 +11,56 @@ using PhoneDirectory.Application.Services.PersonService;
 public class PersonController : ControllerBase
 {
     private readonly IPersonService _personService;
+    private readonly ReportPublisher _reportPublisher;
 
-    public PersonController(IPersonService personService)
+    public PersonController(IPersonService personService, ReportPublisher reportPublisher)
     {
         _personService = personService;
+        _reportPublisher = reportPublisher;
     }
 
     /// <summary>
     /// Tüm kiþileri getirir.
     /// </summary>
-    /// <returns>Kiþi listesini içeren HTTP yanýtý döner.</returns>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var result = await _personService.GetAllAsync();
-        if (result.IsSuccess)
-            return Ok(result);
-
-        return BadRequest(result.Messages);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Messages);
     }
 
     /// <summary>
     /// Belirtilen ID'ye sahip kiþiyi getirir.
     /// </summary>
-    /// <param name="id">Getirilecek kiþinin benzersiz kimliði.</param>
-    /// <returns>Kiþi bilgilerini içeren HTTP yanýtý döner.</returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _personService.GetByIdAsync(id);
-        if (result.IsSuccess)
-            return Ok(result);
-
-        return BadRequest(result.Messages);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Messages);
     }
 
     /// <summary>
-    /// Yeni bir kiþi oluþturur.
+    /// Yeni bir kiþi oluþturur ve RabbitMQ'ya rapor talebi gönderir.
     /// </summary>
-    /// <param name="createDTO">Oluþturulacak kiþinin bilgilerini içeren DTO.</param>
-    /// <returns>Oluþturma iþleminin sonucunu içeren HTTP yanýtý döner.</returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] PersonCreateDTO createDTO)
     {
         var result = await _personService.CreateAsync(createDTO);
-        if (result.IsSuccess)
-            return Ok(result);
+        if (!result.IsSuccess)
+            return BadRequest(result.Messages);
 
-        return BadRequest(result.Messages);
+        // Kiþi baþarýyla eklendiyse RabbitMQ'ya rapor talebi gönder
+        var personId = Guid.NewGuid(); // Eðer servis ID döndürmüyorsa, rastgele ID oluþturabiliriz
+        var location = createDTO.CommunicationInfos.FirstOrDefault(c => c.InfoContent == "Konum")?.InfoContent ?? "Bilinmiyor";
+
+        _reportPublisher.PublishReportRequest(personId, location);
+
+        return Ok(new { Message = "Kiþi baþarýyla eklendi ve rapor talebi gönderildi.", Person = personId });
     }
 
     /// <summary>
     /// Var olan bir kiþiyi günceller.
     /// </summary>
-    /// <param name="id">Güncellenecek kiþinin benzersiz kimliði.</param>
-    /// <param name="updateDTO">Güncellenecek kiþinin bilgilerini içeren DTO.</param>
-    /// <returns>Güncelleme iþleminin sonucunu içeren HTTP yanýtý döner.</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] PersonUpdateDTO updateDTO)
     {
@@ -73,24 +68,16 @@ public class PersonController : ControllerBase
             return BadRequest("ID uyuþmazlýðý");
 
         var result = await _personService.UpdateAsync(updateDTO);
-        if (result.IsSuccess)
-            return Ok(result);
-
-        return BadRequest(result.Messages);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Messages);
     }
 
     /// <summary>
     /// Belirtilen ID'ye sahip kiþiyi siler.
     /// </summary>
-    /// <param name="id">Silinecek kiþinin benzersiz kimliði.</param>
-    /// <returns>Silme iþleminin sonucunu içeren HTTP yanýtý döner.</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var result = await _personService.DeleteAsync(id);
-        if (result.IsSuccess)
-            return Ok(result);
-
-        return BadRequest(result.Messages);
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Messages);
     }
 }

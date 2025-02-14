@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using PhoneDirectory.API.Services;
 using PhoneDirectory.Application.DTOs.PersonDTOs;
 using PhoneDirectory.Application.Services.PersonService;
 using PhoneDirectory.Domain.Utilities.Concretes;
@@ -20,7 +21,9 @@ public class PersonControllerTests
     public void Setup()
     {
         _mockService = new Mock<IPersonService>();
-        _controller = new PersonController(_mockService.Object);
+        var mockReportPublisher = new Mock<ReportPublisher>();
+
+        _controller = new PersonController(_mockService.Object, mockReportPublisher.Object);
 
         _testId = Guid.NewGuid();
         _testPersonDto = new PersonDTO

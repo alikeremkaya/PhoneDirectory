@@ -10,14 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddSingleton(sp => new RabbitMQClient(builder.Configuration["RabbitMQ:HostName"]));
-var factory = new ConnectionFactory() { HostName = builder.Configuration["RabbitMQ:HostName"] };    
 
-builder.Services.AddSingleton<MessageListener>();
-builder.Services.AddHostedService<Worker>();
+builder.Services.AddSingleton<ReportConsumer>();
+builder.Services.AddHostedService<ReportConsumer>();
 
+builder.Services.AddSingleton<IConnection>(sp =>
+{
+    var factory = new ConnectionFactory()
+    {
+        HostName = "rabbitmq",  // Eðer localhost olarak ayarlýysa, "rabbitmq" olarak deðiþtir
+        UserName = "guest",
+        Password = "guest"
+    };
 
-
+    return factory.CreateConnection();
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
