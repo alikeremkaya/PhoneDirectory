@@ -26,7 +26,7 @@ namespace PhoneDirectory.UnitTests.Application.Services
             TypeAdapterConfig.GlobalSettings.Default.NameMatchingStrategy(NameMatchingStrategy.Exact);
 
             TypeAdapterConfig<CommunicationInfo, CommunicationInfoDTO>.NewConfig()
-                .Map(dest => dest.Id, src => src.Id)
+               
                 .Map(dest => dest.PersonId, src => src.PersonId)
                 .Map(dest => dest.InfoType, src => src.InfoType)
                 .Map(dest => dest.InfoContent, src => src.InfoContent)
@@ -89,7 +89,7 @@ namespace PhoneDirectory.UnitTests.Application.Services
             {
                 Assert.IsTrue(result.IsSuccess, "Result should indicate success.");
                 Assert.IsNotNull(result.Data, "Data should not be null.");
-                Assert.AreEqual(_testInfo.Id, result.Data.Id, "Ids should match.");
+              
                 Assert.AreEqual(_personId, result.Data.PersonId, "PersonIds should match.");
                 Assert.AreEqual(_testInfo.InfoType, result.Data.InfoType, "InfoTypes should match.");
                 Assert.AreEqual(_testInfo.InfoContent, result.Data.InfoContent, "InfoContents should match.");

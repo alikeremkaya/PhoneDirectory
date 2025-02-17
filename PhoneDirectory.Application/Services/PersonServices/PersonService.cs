@@ -36,16 +36,20 @@ namespace PhoneDirectory.Application.Services.PersonServices;
             return new SuccessDataResult<PersonDTO>(dto, "Person retrieved successfully");
         }
 
-        public async Task<IResult> CreateAsync(PersonCreateDTO personCreateDTO)
-        {
-            var person = personCreateDTO.Adapt<Person>();
-            await _personRepository.AddAsync(person);
-            await _personRepository.SaveChangesAsync();
+    public async Task<IDataResult<PersonDTO>> CreateAsync(PersonCreateDTO personCreateDTO)
+    {
+        var person = personCreateDTO.Adapt<Person>();
+        person.Id = Guid.NewGuid(); 
 
-            return new SuccessResult("Person created successfully");
-        }
+        await _personRepository.AddAsync(person);
+        await _personRepository.SaveChangesAsync();
 
-        public async Task<IResult> UpdateAsync(PersonUpdateDTO personUpdateDTO)
+        var personDto = person.Adapt<PersonDTO>(); 
+
+        return new SuccessDataResult<PersonDTO>(personDto, "Person created successfully");
+    }
+
+    public async Task<IResult> UpdateAsync(PersonUpdateDTO personUpdateDTO)
         {
             var person = await _personRepository.GetByIdAsync(personUpdateDTO.Id);
             if (person == null)

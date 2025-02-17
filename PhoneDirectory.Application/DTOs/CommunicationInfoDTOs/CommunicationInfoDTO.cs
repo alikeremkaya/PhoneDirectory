@@ -4,7 +4,7 @@ namespace PhoneDirectory.Application.DTOs.CommunicationInfoDTOs;
 
 public class CommunicationInfoDTO
 {
-    public Guid Id { get; set; }
+    
     public Guid PersonId { get; set; }
     public ContactInfoType InfoType { get; set; }
     public string InfoContent { get; set; }

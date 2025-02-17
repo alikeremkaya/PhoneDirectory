@@ -23,7 +23,7 @@ public interface IPersonService
     /// </summary>
     /// <param name="personCreateDTO">Oluşturulacak kişinin bilgilerini içeren DTO.</param>
     /// <returns>İşlem sonucunu döner.</returns>
-    Task<IResult> CreateAsync(PersonCreateDTO personCreateDTO);
+    Task<IDataResult<PersonDTO>> CreateAsync(PersonCreateDTO personCreateDTO);
 
     /// <summary>
     /// Var olan bir kişiyi günceller.

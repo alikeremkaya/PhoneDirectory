@@ -5,8 +5,8 @@ namespace PhoneDirectory.Domain.Core.Base;
 
 public abstract class BaseEntity : IUpdatableEntity
 {
-  
-        public Guid Id { get; set; }
+
+    public Guid Id { get; set; } = Guid.NewGuid();
         public Status Status { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

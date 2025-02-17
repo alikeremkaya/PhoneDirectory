@@ -21,7 +21,7 @@ public class PersonControllerTests
     public void Setup()
     {
         _mockService = new Mock<IPersonService>();
-        var mockReportPublisher = new Mock<ReportPublisher>();
+        var mockReportPublisher = new Mock<ReportRequestPublisher>();
 
         _controller = new PersonController(_mockService.Object, mockReportPublisher.Object);
 
@@ -120,7 +120,7 @@ public class PersonControllerTests
     {
         // Arrange
         _mockService.Setup(x => x.CreateAsync(_createDto))
-            .ReturnsAsync(new SuccessResult("Person successfully created"));
+            .ReturnsAsync(new SuccessDataResult<PersonDTO>(_testPersonDto, "Person successfully created"));
 
         // Act
         var result = await _controller.Create(_createDto);
@@ -128,7 +128,7 @@ public class PersonControllerTests
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
-        var value = okResult.Value as SuccessResult;
+        var value = okResult.Value as SuccessDataResult<PersonDTO>;
         Assert.That(value.Messages, Is.EqualTo("Person successfully created"));
     }
 
@@ -136,8 +136,8 @@ public class PersonControllerTests
     public async Task Create_WithInvalidData_ShouldReturnBadRequest()
     {
         // Arrange
-        _mockService.Setup(x => x.CreateAsync(_createDto))
-            .ReturnsAsync(new ErrorResult("Invalid data"));
+        _mockService.Setup(x => x.CreateAsync(It.IsAny<PersonCreateDTO>()))
+            .ReturnsAsync(new ErrorDataResult<PersonDTO>("Invalid data"));
 
         // Act
         var result = await _controller.Create(_createDto);

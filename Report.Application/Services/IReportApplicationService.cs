@@ -9,4 +9,5 @@ public interface IReportApplicationService
     Task<IDataResult<ReportDTO>> GetReportByIdAsync(Guid id);
     Task<IDataResult<ReportDTO>> CreateReportAsync(CreateReportDTO createReportDto);
     Task<IDataResult<ReportDTO>> UpdateReportStatusAsync(Guid id, UpdateReportDTO updateDto);
+
 }

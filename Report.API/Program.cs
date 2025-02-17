@@ -1,38 +1,33 @@
-using RabbitMQ.Client;
+ï»¿using RabbitMQ.Client;
 using Report.API;
-using Report.API.Services;
-using Report.Application.Extentions;
 
+using Report.Application.Extentions;
+using Report.Application.Services;
 using Report.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddSingleton<ReportConsumer>();
-builder.Services.AddHostedService<ReportConsumer>();
-
-builder.Services.AddSingleton<IConnection>(sp =>
-{
-    var factory = new ConnectionFactory()
-    {
-        HostName = "rabbitmq",  // Eðer localhost olarak ayarlýysa, "rabbitmq" olarak deðiþtir
-        UserName = "guest",
-        Password = "guest"
-    };
-
-    return factory.CreateConnection();
-});
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddSingleton<ReportRequestConsumer>();
+builder.Services.AddSingleton<ReportResultPublisher>();
+
+
+builder.Services.AddScoped<IReportApplicationService, ReportApplicationService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+var consumer = new ReportRequestConsumer(app.Services.GetRequiredService<IConfiguration>(),
+                                         app.Services.GetRequiredService<IServiceScopeFactory>());
+consumer.StartListening();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -40,9 +35,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

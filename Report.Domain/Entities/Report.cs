@@ -11,6 +11,7 @@ public class Report : AuditableEntity
     public int PhoneNumberCount { get; set; }
     public ReportStatus ReportStatus { get; set; }
     public DateTime CompletedDate { get; set; }
+    public DateTime RequestDate { get; set; }
 
     public Report()
     {

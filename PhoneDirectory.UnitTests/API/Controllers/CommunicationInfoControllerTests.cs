@@ -29,7 +29,7 @@ public class CommunicationInfoControllerTests
 
         _testInfoDto = new CommunicationInfoDTO
         {
-            Id = _communicationInfoId,
+           
             PersonId = _personId,
             InfoType = ContactInfoType.PhoneNumber,
             InfoContent = "+905551234567",
@@ -84,7 +84,7 @@ public class CommunicationInfoControllerTests
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = result as OkObjectResult;
         var value = okResult.Value as SuccessDataResult<CommunicationInfoDTO>;
-        Assert.That(value.Data.Id, Is.EqualTo(_communicationInfoId));
+       
         Assert.That(value.Messages, Is.EqualTo("Communication info successfully found"));
         Assert.That(value.IsSuccess, Is.True);
     }
@@ -121,7 +121,7 @@ public class CommunicationInfoControllerTests
         Assert.That(result, Is.InstanceOf<OkObjectResult>()); 
         var okResult = result as OkObjectResult;  
         var value = okResult.Value as SuccessDataResult<CommunicationInfoDTO>;
-        Assert.That(value.Data.Id, Is.EqualTo(_communicationInfoId));
+       
         Assert.That(value.Messages, Is.EqualTo("Communication info successfully created")); 
         Assert.That(value.IsSuccess, Is.True);  
                                              

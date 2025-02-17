@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-
+using Report.Application.DTOs;
 using Report.Application.Services;
 namespace Report.Application.Extentions;
 public static class DependencyInjection
@@ -8,7 +8,7 @@ public static class DependencyInjection
     {
 
 
-
+       
         services.AddScoped<IReportApplicationService, ReportApplicationService>();
        
         return services;

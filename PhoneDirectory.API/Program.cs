@@ -1,7 +1,8 @@
 using PhoneDirectory.Infrastructure.Extentions;
 using PhoneDirectory.Application.Extentions;
-using PhoneDirectory.API.Services;
+
 using RabbitMQ.Client;
+using PhoneDirectory.API.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,18 +15,10 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ReportPublisher>();
+builder.Services.AddSingleton<ReportRequestPublisher>();
 var app = builder.Build();
-builder.Services.AddSingleton<IConnection>(sp =>
-{
-    var factory = new ConnectionFactory()
-    {
-        HostName = "rabbitmq", 
-        Password = "guest"
-    };
 
-    return factory.CreateConnection();
-});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

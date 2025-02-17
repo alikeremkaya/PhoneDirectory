@@ -1,11 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Report.Application.DTOs;
+﻿namespace Report.Application.DTOs;
 
 public class ReportListDTO
 {

@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PhoneDirectory.Application\PhoneDirectory.Application.csproj" />
     <ProjectReference Include="..\PhoneDirectory.Infrastructure\PhoneDirectory.Infrastructure.csproj" />
+    <ProjectReference Include="..\Report.Application\Report.Application.csproj" />
   </ItemGroup>
 
 </Project>

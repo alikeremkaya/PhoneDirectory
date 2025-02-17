@@ -1,26 +1,28 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using PhoneDirectory.API.Services;
 using PhoneDirectory.Application.DTOs.PersonDTOs;
 using PhoneDirectory.Application.Services.PersonService;
+using PhoneDirectory.Domain.Enums;
+using PhoneDirectory.Domain.Utilities.Interfaces;
 
 /// <summary>
-/// Kiþi yönetimi ile ilgili iþlemleri gerçekleþtiren API denetleyicisidir.
+/// KiÅŸi yÃ¶netimi ile ilgili iÅŸlemleri gerÃ§ekleÅŸtiren API denetleyicisidir.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class PersonController : ControllerBase
 {
     private readonly IPersonService _personService;
-    private readonly ReportPublisher _reportPublisher;
+    private readonly ReportRequestPublisher _reportPublisher;
 
-    public PersonController(IPersonService personService, ReportPublisher reportPublisher)
+    public PersonController(IPersonService personService, ReportRequestPublisher reportPublisher)
     {
         _personService = personService;
         _reportPublisher = reportPublisher;
     }
-
+  
     /// <summary>
-    /// Tüm kiþileri getirir.
+    /// TÃ¼m kiÅŸileri getirir.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -30,7 +32,7 @@ public class PersonController : ControllerBase
     }
 
     /// <summary>
-    /// Belirtilen ID'ye sahip kiþiyi getirir.
+    /// Belirtilen ID'ye sahip kiÅŸiyi getirir.
     /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -40,39 +42,57 @@ public class PersonController : ControllerBase
     }
 
     /// <summary>
-    /// Yeni bir kiþi oluþturur ve RabbitMQ'ya rapor talebi gönderir.
+    /// Yeni bir kiÅŸi oluÅŸturur ve RabbitMQ'ya rapor talebi gÃ¶nderir.
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] PersonCreateDTO createDTO)
     {
+        if (createDTO == null)
+        {
+            return BadRequest("GeÃ§ersiz veri gÃ¶nderildi.");
+        }
+
         var result = await _personService.CreateAsync(createDTO);
         if (!result.IsSuccess)
+        {
             return BadRequest(result.Messages);
+        }
 
-        // Kiþi baþarýyla eklendiyse RabbitMQ'ya rapor talebi gönder
-        var personId = Guid.NewGuid(); // Eðer servis ID döndürmüyorsa, rastgele ID oluþturabiliriz
-        var location = createDTO.CommunicationInfos.FirstOrDefault(c => c.InfoContent == "Konum")?.InfoContent ?? "Bilinmiyor";
+       
+        if (result is IDataResult<PersonDTO> dataResult && dataResult.Data != null)
+        {
+            var personId = dataResult.Data.Id;
 
-        _reportPublisher.PublishReportRequest(personId, location);
+            // ðŸ“Œ Null kontrolÃ¼ ekleyelim
+            var location = createDTO.CommunicationInfos != null
+                ? createDTO.CommunicationInfos.FirstOrDefault(c => c.InfoType == ContactInfoType.Location)?.InfoContent ?? "Bilinmiyor"
+                : "Bilinmiyor";
 
-        return Ok(new { Message = "Kiþi baþarýyla eklendi ve rapor talebi gönderildi.", Person = personId });
+            _reportPublisher.SendReportRequest(personId, location);
+
+            return Ok(new { Message = "KiÅŸi baÅŸarÄ±yla eklendi ve rapor talebi gÃ¶nderildi.", PersonId = personId });
+        }
+        else
+        {
+            return BadRequest("KiÅŸi oluÅŸturulurken veri alÄ±namadÄ±.");
+        }
     }
 
     /// <summary>
-    /// Var olan bir kiþiyi günceller.
+    /// Var olan bir kiÅŸiyi gÃ¼nceller.
     /// </summary>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] PersonUpdateDTO updateDTO)
     {
         if (id != updateDTO.Id)
-            return BadRequest("ID uyuþmazlýðý");
+            return BadRequest("ID uyuÅŸmazlÄ±ÄŸÄ±");
 
         var result = await _personService.UpdateAsync(updateDTO);
         return result.IsSuccess ? Ok(result) : BadRequest(result.Messages);
     }
 
     /// <summary>
-    /// Belirtilen ID'ye sahip kiþiyi siler.
+    /// Belirtilen ID'ye sahip kiÅŸiyi siler.
     /// </summary>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)

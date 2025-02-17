@@ -1,35 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Report.Application.DTOs;
-
 using Report.Application.Services;
 using Report.Domain.Utilities.Interfaces;
-using Xunit.Sdk;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Report.API.Controllers;
 
 /// <summary>
-/// Rapor yönetimi ile ilgili işlemleri gerçekleştiren API denetleyicisidir.
+/// Rapor yönetimi API'si
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class ReportsController : ControllerBase
 {
     private readonly IReportApplicationService _reportService;
-    private readonly IMessageBus _messageBus;
-    private IReportApplicationService @object;
-    private const string QUEUE_NAME = "report-requests";
 
-    public ReportsController(
-        IReportApplicationService reportService,
-        IMessageBus messageBus)
+    public ReportsController(IReportApplicationService reportService)
     {
         _reportService = reportService;
-        _messageBus = messageBus ?? throw new ArgumentNullException(nameof(messageBus));
-    }
-
-    public ReportsController(IReportApplicationService @object)
-    {
-        this.@object = @object;
     }
 
     /// <summary>
@@ -66,13 +56,16 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateReportDTO createReportDto)
     {
+        if (createReportDto == null)
+            return BadRequest("Geçersiz veri gönderildi.");
+
         try
         {
             var result = await _reportService.CreateReportAsync(createReportDto);
 
             if (result.IsSuccess)
             {
-                // Rapor oluşturulduğunda RabbitMQ'ya mesaj gönder
+              
                 var message = new ReportMessage
                 {
                     ReportId = result.Data.Id,
@@ -80,23 +73,17 @@ public class ReportsController : ControllerBase
                     Status = "Created"
                 };
 
-               
+                Console.WriteLine($" Rapor oluşturuldu, RabbitMQ'ya gönderildi: {message.ReportId}");
 
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = result.Data.Id },
-                    result
-                );
+                return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result);
             }
 
             return BadRequest(result);
         }
         catch (Exception ex)
         {
-            return StatusCode(
-                StatusCodes.Status500InternalServerError,
-                new { message = "Rapor oluşturulurken bir hata oluştu.", error = ex.Message }
-            );
+            Console.WriteLine($" Rapor oluşturulurken hata: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Rapor oluşturulurken hata oluştu.", error = ex.Message });
         }
     }
 
@@ -110,29 +97,42 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateReportDTO updateDto)
     {
-        var result = await _reportService.UpdateReportStatusAsync(id, updateDto);
+        if (updateDto == null)
+            return BadRequest("Güncellenecek veri gönderilmedi.");
 
-        if (result.IsSuccess)
+        try
         {
-            // Rapor durumu güncellendiğinde RabbitMQ'ya mesaj gönder
-            var message = new ReportMessage
+            var result = await _reportService.UpdateReportStatusAsync(id, updateDto);
+
+            if (result.IsSuccess)
             {
-                ReportId = id,
-                UpdatedDate = DateTime.UtcNow,
-                Status = updateDto.Status.ToString()
-            };
+                // 📌 Rapor durumu güncellendiğinde RabbitMQ'ya mesaj gönder
+                var message = new ReportMessage
+                {
+                    ReportId = id,
+                    UpdatedDate = DateTime.UtcNow,
+                    Status = updateDto.Status.ToString()
+                };
 
-          
+                Console.WriteLine($" Rapor durumu güncellendi, RabbitMQ'ya mesaj gönderildi: {message.ReportId}");
+
+                return Ok(result);
+            }
+
+            return NotFound(result);
         }
-
-        return result.IsSuccess ? Ok(result) : NotFound(result);
+        catch (Exception ex)
+        {
+            Console.WriteLine($" Rapor durumu güncellenirken hata: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Rapor güncellenirken hata oluştu.", error = ex.Message });
+        }
     }
 }
 
 /// <summary>
 /// RabbitMQ'ya gönderilecek rapor mesajı
 /// </summary>
-public class ReportMessage 
+public class ReportMessage
 {
     public Guid ReportId { get; set; }
     public DateTime CreatedDate { get; set; }
