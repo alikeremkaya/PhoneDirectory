@@ -37,7 +37,7 @@ Bu proje, **.NET Core** kullanılarak geliştirilen bir **mikroservis mimarisi**
 ## 🚀 **Kurulum**
 
 ### **📌 1️⃣ Gerekli Bağımlılıkları Yükleyin**
-- [ ] .NET 7 SDK'yı indirin ve yükleyin: https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+- [ ] .NET 8 SDK'yı indirin ve yükleyin: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 - [ ] MSSQL Server'ı yükleyin ve çalıştırın.
 - [ ] RabbitMQ servisini kurun veya CloudAMQP kullanın.
 
