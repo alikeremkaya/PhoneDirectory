@@ -51,7 +51,7 @@ cd phone-directory-microservices
 📌 **Veritabanı bağlantı ayarlarını `appsettings.json` içine ekleyin:**
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Server=localhost;Database=PhoneDirectoryDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True"
+  "DefaultConnection": "Server=x;Database=x;User Id=x;Password=x;TrustServerCertificate=True"
 }
 ```
 📌 **EF Core ile veritabanını oluşturun:**
@@ -63,7 +63,7 @@ dotnet ef database update --project PhoneDirectory.Infrastructure
 📌 **RabbitMQ bağlantı ayarlarını `appsettings.json` içinde güncelleyin:**
 ```json
 "RabbitMQ": {
-  "Uri": "amqps://your-cloudamqp-uri",
+  "Uri": "amqps://your-cloudamqp-uri",  (https://customer.cloudamqp.com/) dan oluşturduğunuz ınstance ile)
   "RequestQueue": "report_requests",
   "ResultQueue": "report_results"
 }
