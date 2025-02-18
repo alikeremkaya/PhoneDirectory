@@ -1,189 +1,124 @@
-# PhoneDirectory
+# 📞 Telefon Rehberi Mikroservis Projesi
 
-PhoneDirectory, mikroservis mimarisi kullanılarak geliştirilmiş bir telefon rehberi uygulamasıdır. Bu uygulama, kişilerin ve iletişim bilgilerinin yönetimini sağlar. Ayrıca, RabbitMQ kullanarak mikroservisler arasında mesaj iletişimini sağlar.
+Bu proje, **.NET Core** kullanılarak geliştirilen bir **mikroservis mimarisi** ile çalışan **telefon rehberi uygulamasıdır**. Sistemde **RabbitMQ** kullanılarak **asenkron raporlama** yapılmaktadır.
 
-## İçindekiler
+## 📌 **Proje Özeti**
+**Telefon Rehberi Mikroservis Projesi**, kullanıcıların kişi ekleyip silebildiği, iletişim bilgilerini yönetebildiği ve konum bazlı rapor alabileceği bir uygulamadır.
 
-- [Özellikler](#özellikler)
-- [Kurulum](#kurulum)
-- [Kullanım](#kullanım)
-- [Mimari](#mimari)
-- [Yazarlar](#yazarlar)
+## 🎯 **Özellikler**
+- ✅ **Rehberde kişi oluşturma, silme, güncelleme**
+- ✅ **Kişilere telefon numarası, e-mail veya konum ekleme**
+- ✅ **Rehberdeki kişilerin listelenmesi ve detay görüntüleme**
+- ✅ **Belirli bir konumdaki kişi ve telefon numarası sayısını içeren rapor oluşturma**
+- ✅ **RabbitMQ ile asenkron rapor işlemleri**
+- ✅ **Swagger UI ile API dokümantasyonu**
 
-## Özellikler
+---
 
-- Kişi ve iletişim bilgilerini yönetme
-- Mikroservis mimarisi
-- RabbitMQ ile mesaj iletişimi
-- Swagger ile API dokümantasyonu
+## 📂 **Mikroservisler ve Teknolojiler**
 
-## Kurulum
+| Mikroservis Adı     | Açıklama |
+|---------------------|----------|
+| 📌 `PhoneDirectory.API` | Kişi ve iletişim bilgilerini yöneten API |
+| 📌 `Report.API` | Raporları yöneten ve RabbitMQ'dan mesaj tüketen API |
+| 📌 `RabbitMQ` | Mikroservisler arası mesajlaşmayı yönetir |
+| 📌 `MSSQL` | Veritabanı yönetimi |
 
-### Gereksinimler
+### **🛠 Kullanılan Teknolojiler:**
+- **C# / .NET 8**
+- **ASP.NET Core Web API**
+- **Entity Framework Core & MSSQL**
+- **RabbitMQ (CloudAMQP ile)**
+- **Docker (Opsiyonel)**
+- **Swagger UI**
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [RabbitMQ](https://www.rabbitmq.com/download.html)
-- [Docker](https://www.docker.com/get-started)
+---
 
-### Adımlar
+## 🚀 **Kurulum**
 
-1. Bu projeyi klonlayın:
+### **📌 1️⃣ Gerekli Bağımlılıkları Yükleyin**
+- [ ] .NET 8 SDK'yı indirin ve yükleyin: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+- [ ] MSSQL Server'ı yükleyin ve çalıştırın.
+- [ ] RabbitMQ servisini kurun veya CloudAMQP kullanın.
 
-    ```bash
-    git clone https://github.com/alikeremkaya/PhoneDirectory.git
-    cd PhoneDirectory
-    ```
+### **📌 2️⃣ Proje Depolarını Klonlayın**
+```bash
+git clone https://github.com/kullanici/phone-directory-microservices.git
+cd phone-directory-microservices
+```
 
-2. RabbitMQ'yu Docker ile başlatın:
+### **📌 3️⃣ Veritabanını Ayarlayın**
+📌 **Veritabanı bağlantı ayarlarını `appsettings.json` içine ekleyin:**
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=x;Database=x;User Id=x;Password=x;TrustServerCertificate=True"
+}
+```
+📌 **EF Core ile veritabanını oluşturun:**
+```bash
+dotnet ef database update --project PhoneDirectory.Infrastructure
+```
 
-    ```bash
-    docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-    ```
+### **📌 4️⃣ RabbitMQ Bağlantısını Güncelleyin**
+📌 **RabbitMQ bağlantı ayarlarını `appsettings.json` içinde güncelleyin:**
+```json
+"RabbitMQ": {
+  "Uri": "amqps://your-cloudamqp-uri",  (https://customer.cloudamqp.com/) dan oluşturduğunuz ınstance ile)
+  "RequestQueue": "report_requests",
+  "ResultQueue": "report_results"
+}
+```
 
-3. Projeyi Docker Compose ile çalıştırın:
+### **📌 5️⃣ API'leri Çalıştırın**
+```bash
+dotnet run --project PhoneDirectory.API
+```
+```bash
+dotnet run --project Report.API
+```
+📌 **API'ler başarılı bir şekilde başladıysa, aşağıdaki adreslerden erişebilirsiniz:**
+- 📞 **Kişi API (PhoneDirectory.API)**: http://localhost:5001/swagger
+- 📊 **Rapor API (Report.API)**: http://localhost:5002/swagger
 
-    ```bash
-    docker-compose up --build
-    ```
-4. PhoneDirectory.API mikroservisini çalıştırın:
-    ```bash
-    dotnet run --project PhoneDirectory.API
-    ```
+---
 
-5. Report.API mikroservisini çalıştırın:
-    ```bash
-    dotnet run --project Report.API
-    ```
+## 📌 **API Endpointleri**
+### 📞 **Kişi Yönetimi (PhoneDirectory.API)**
+| Metot | URL | Açıklama |
+|-------|-----|----------|
+| **GET** | `/api/person` | Tüm kişileri getir |
+| **GET** | `/api/person/{id}` | Belirtilen ID'ye sahip kişiyi getir |
+| **POST** | `/api/person` | Yeni kişi ekle |
+| **PUT** | `/api/person/{id}` | Kişi bilgilerini güncelle |
+| **DELETE** | `/api/person/{id}` | Kişiyi sil |
 
-6. Tarayıcınızda Swagger dokümantasyonunu açın:
+### 📊 **Rapor Yönetimi (Report.API)**
+| Metot | URL | Açıklama |
+|-------|-----|----------|
+| **GET** | `/api/reports` | Tüm raporları listele |
+| **GET** | `/api/reports/{id}` | Belirtilen raporu getir |
+| **POST** | `/api/reports` | Yeni rapor oluştur |
+| **PUT** | `/api/reports/{id}/status` | Rapor durumunu güncelle |
 
-    - PhoneDirectory.API: `http://localhost:5133/swagger`
-    - Report.API: `http://localhost:5191/swagger`
+---
 
-## Kullanım
-
-### API İstekleri
-
-#### Kişi Yönetimi
-
-- Tüm kişileri getir:
-    ```http
-    GET /api/persons
-    ```
-
-- Belirli bir kişiyi getir:
-    ```http
-    GET /api/persons/{id}
-    ```
-
-- Yeni bir kişi oluştur:
-    ```http
-    POST /api/persons
-    Content-Type: application/json
-
-    {
-        "firstName": "Ali Kerem",
-        "lastName": "Kaya"
-    }
-    ```
-
-- Kişi güncelle:
-    ```http
-    PUT /api/persons/{id}
-    Content-Type: application/json
-
-    {
-        "id": "{id}",
-        "firstName": "Ali Kerem",
-        "lastName": "Kaya"
-    }
-    ```
-
-- Kişi sil:
-    ```http
-    DELETE /api/persons/{id}
-    ```
-
-#### İletişim Bilgisi Yönetimi
-
-- Belirli bir kişiye ait tüm iletişim bilgilerini getir:
-    ```http
-    GET /api/persons/{personId}/communication-info
-    ```
-
-- Belirli bir kişiye ait belirli bir iletişim bilgisini getir:
-    ```http
-    GET /api/persons/{personId}/communication-info/{communicationInfoId}
-    ```
-
-- Yeni bir iletişim bilgisi ekle:
-    ```http
-    POST /api/persons/{personId}/communication-info
-    Content-Type: application/json
-
-    {
-        "type": "Phone",
-        "value": "+5456227"
-    }
-    ```
-
-- İletişim bilgisi güncelle:
-    ```http
-    PUT /api/persons/{personId}/communication-info/{communicationInfoId}
-    Content-Type: application/json
-
-    {
-        "type": "Phone",
-        "value": "+5456227"
-    }
-    ```
-
-- İletişim bilgisi sil:
-    ```http
-    DELETE /api/persons/{personId}/communication-info/{communicationInfoId}
-    ```
-
-### Rapor Yönetimi
-
-- Tüm raporları getir:
-    ```http
-    GET /api/reports
-    ```
-
-- Belirli bir raporu getir:
-    ```http
-    GET /api/reports/{id}
-    ```
-
-- Yeni bir rapor oluştur:
-    ```http
-    POST /api/reports
-    Content-Type: application/json
-
-    {
-        "reportType": "LocationReport",
-        "requestDate": "2025-02-09T18:25:37Z"
-    }
-    ```
-
-- Rapor durumunu güncelle:
-    ```http
-    PUT /api/reports/{id}/status
-    Content-Type: application/json
-
-    {
-        "status": "Completed"
-    }
-    ```
+## 📌 **RabbitMQ Entegrasyonu**
+📌 **Telefon Rehberi API bir kişi oluşturduğunda, RabbitMQ kuyruğuna bir mesaj ekler:**
+```json
+{
+  "PersonId": "guid",
+  "Location": "Istanbul",
+  "RequestedDate": "2024-02-17T12:00:00Z"
+}
+```
+📌 **Report API, RabbitMQ'dan gelen mesajı tüketerek rapor oluşturur.**
 
 
 
-## Mimari
 
-- `PhoneDirectory.API`: Kişi ve iletişim bilgilerini yönetir.
-- `Report.API`: Raporlama işlemlerini yapar.
-- RabbitMQ: Mikroservisler arasında mesaj iletişimini sağlar.
 
-## Yazarlar
 
-- **Ali Kerem Kaya** - [alikeremkaya](https://github.com/alikeremkaya)
+
+
+
+
